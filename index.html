@@ -91,7 +91,13 @@ parts:[
 
 const data = await response.json();
 
-let reply = data.candidates[0].content.parts[0].text;
+console.log(data);
+
+let reply = "No response";
+
+if(data.candidates){
+reply = data.candidates[0].content.parts[0].text;
+}
 
 document.getElementById("chat").innerHTML +=
 "<p><b>AI:</b> "+reply+"</p>";
