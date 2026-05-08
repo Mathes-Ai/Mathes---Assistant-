@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathes Nova AI</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#050505;
+color:white;
+overflow:hidden;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+.container{
+width:100%;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.ai-box{
+width:100%;
+max-width:700px;
+height:90vh;
+background:rgba(15,15,15,0.92);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:25px;
+backdrop-filter:blur(10px);
+box-shadow:0 0 40px rgba(0,255,255,0.15);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.header{
+padding:20px;
+text-align:center;
+background:#111;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.header h1{
+font-size:32px;
+margin-bottom:5px;
+color:cyan;
+}
+
+.header p{
+color:#bdbdbd;
+font-size:14px;
+}
+
+.chat-area{
+flex:1;
+padding:20px;
+overflow-y:auto;
+scroll-behavior:smooth;
+}
+
+.message{
+padding:14px;
+margin:12px 0;
+border-radius:15px;
+max-width:85%;
+line-height:1.5;
+animation:fade 0.3s ease;
+}
+
+.bot{
+background:#1f1f1f;
+border:1px solid rgba(0,255,255,0.2);
+}
+
+.user{
+background:cyan;
+color:black;
+margin-left:auto;
+text-align:right;
+font-weight:bold;
+}
+
+.input-area{
+display:flex;
+padding:15px;
+background:#111;
+border-top:1px solid rgba(255,255,255,0.1);
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+background:#1d1d1d;
+color:white;
+font-size:16px;
+outline:none;
+}
+
+button{
+margin-left:10px;
+padding:15px 20px;
+border:none;
+border-radius:15px;
+background:cyan;
+color:black;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+background:white;
+}
+
+.typing{
+font-size:13px;
+color:gray;
+padding-left:5px;
+margin-top:-5px;
+}
+
+.footer{
+text-align:center;
+padding:10px;
+font-size:12px;
+color:gray;
+background:#0d0d0d;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@media(max-width:600px){
+
+.header h1{
+font-size:25px;
+}
+
+.ai-box{
+height:95vh;
+}
+
+button{
+padding:12px;
+font-size:13px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container">
+
+<div class="ai-box">
+
+<div class="header">
+<h1>🤖 Mathes Nova AI</h1>
+<p>Elite AI Assistant • Study • Productivity • Creativity</p>
+</div>
+
+<div class="chat-area" id="chatArea">
+
+<div class="message bot">
+👋 Hello Mathes! I am your powerful AI assistant.<br>
+Ask me anything 🚀
+</div>
+
+</div>
+
+<div class="input-area">
+
+<input type="text" id="userInput" placeholder="Talk with Mathes AI...">
+
+<button onclick="sendMessage()">Send</button>
+
+<button onclick="clearChat()">Clear</button>
+
+</div>
+
+<div class="footer">
+Powered by Mathes Nova AI ⚡
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const chatArea = document.getElementById("chatArea");
+const input = document.getElementById("userInput");
+
+function botReply(text){
+
+text = text.toLowerCase();
+
+let reply = "🚀 I am evolving into a powerful AI system.";
+
+if(text.includes("ssc")){
+reply = "📚 SSC preparation needs daily mock tests, revision and consistency.";
+}
+
+else if(text.includes("tnpsc")){
+reply = "🔥 TNPSC success comes from strong basics and repeated practice.";
+}
+
+else if(text.includes("net")){
+reply = "🎯 UGC NET Economics requires concept clarity and revision strategy.";
+}
+
+else if(text.includes("study")){
+reply = "📖 Study every day. Small improvements become big success.";
+}
+
+else if(text.includes("motivate")){
+reply = "💪 Don't stop now. Your future is loading...";
+}
+
+else if(text.includes("ai")){
+reply = "🤖 AI is the future. You are learning real developer skills.";
+}
+
+else if(text.includes("hello") || text.includes("hi")){
+reply = "😄 Hello Mathes! Ready to build something powerful today?";
+}
+
+else if(text.includes("love")){
+reply = "❤️ Love gives life beauty and meaning.";
+}
+
+else if(text.includes("sad")){
+reply = "💙 Stay strong. Better days are coming.";
+}
+
+else if(text.includes("who are you")){
+reply = "🤖 I am Mathes Nova AI, your intelligent assistant.";
+}
+
+else if(text.includes("bye")){
+reply = "👋 Goodbye Mathes! Keep learning and growing.";
+}
+
+else{
+reply = "✨ I understand: " + text;
+}
+
+return reply;
+
+}
+
+function sendMessage(){
+
+const text = input.value.trim();
+
+if(text === "") return;
+
+chatArea.innerHTML += `
+<div class="message user">${text}</div>
+`;
+
+chatArea.innerHTML += `
+<div class="typing" id="typing">Mathes AI typing...</div>
+`;
+
+chatArea.scrollTop = chatArea.scrollHeight;
+
+setTimeout(()=>{
+
+document.getElementById("typing").remove();
+
+chatArea.innerHTML += `
+<div class="message bot">${botReply(text)}</div>
+`;
+
+chatArea.scrollTop = chatArea.scrollHeight;
+
+},1000);
+
+input.value = "";
+
+}
+
+function clearChat(){
+
+chatArea.innerHTML = `
+<div class="message bot">
+👋 Chat cleared. Ask me anything again.
+</div>
+`;
+
+}
+
+input.addEventListener("keypress",function(e){
+
+if(e.key === "Enter"){
+sendMessage();
+}
+
+});
+
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<120;i++){
+
+particles.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+dx:(Math.random()-0.5),
+dy:(Math.random()-0.5)
+
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle = "cyan";
+
+particles.forEach(p=>{
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+
+p.x += p.dx;
+p.y += p.dy;
+
+if(p.x<0 || p.x>canvas.width) p.dx *= -1;
+if(p.y<0 || p.y>canvas.height) p.dy *= -1;
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+  </html>
