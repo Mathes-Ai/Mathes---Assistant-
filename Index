@@ -1,34 +1,52 @@
 import streamlit as st
 import google.generativeai as genai
-import os
+import random
+from datetime import datetime
 
-# 1. API Key-a Vercel settings-la irundhu edukurom
-api_key = os.environ.get("GEMINI_API_KEY")
+# =========================================
+# DIRECT API SETUP (No Settings Needed)
+# =========================================
+api_key = "AIzaSyC_nbTAisBRxPNEI4hHGVaLvOzLNjyKMmU" # Unga key-a ingaye pottuten
 
-if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-else:
-    st.error("API Key missing! Settings-la add pannunga.")
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-# 2. UI Design (Unga Assistant)
+# =========================================
+# CORE FUNCTIONS
+# =========================================
+
+def ai_chat(message):
+    try:
+        response = model.generate_content(message)
+        return response.text
+    except Exception as e:
+        return f"⚠️ Error: {str(e)}"
+
+# =========================================
+# UI DESIGN
+# =========================================
+st.set_page_config(page_title="Mathes Ultimate AI")
 st.title("🚀 Mathes AI Assistant")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+tab1, tab2, tab3 = st.tabs(["🤖 AI Chat", "🛠 Tools", "📝 Notes"])
 
-# Chat history-a kaatrom
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+with tab1:
+    user_input = st.chat_input("Kelvi kelunga...")
+    if user_input:
+        st.write(f"**You:** {user_input}")
+        with st.spinner("Thinking..."):
+            ans = ai_chat(user_input)
+            st.write(f"**Mathes AI:** {ans}")
 
-# User input vaangurom
-if prompt := st.chat_input("Kelvi kelunga..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+with tab2:
+    st.subheader("🧮 Calculator")
+    expr = st.text_input("Math Example: 10 + 20")
+    if st.button("Calculate"):
+        try: st.success(f"Result: {eval(expr)}")
+        except: st.error("Invalid math")
 
-    with st.chat_message("assistant"):
-        response = model.generate_content(prompt)
-        st.markdown(response.text)
-        st.session_state.messages.append({"role": "assistant", "content": response.text})
+with tab3:
+    st.subheader("📝 Quick Notes")
+    note = st.text_area("Write something...")
+    if st.button("Save"):
+        st.success("Saved!")
